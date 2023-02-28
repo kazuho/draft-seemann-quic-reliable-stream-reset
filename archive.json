@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-02-26T00:10:29.952875+00:00",
+  "timestamp": "2023-02-28T03:24:16.280053+00:00",
   "repo": "marten-seemann/draft-seemann-quic-reliable-stream-reset",
   "labels": [
     {
@@ -138,6 +138,54 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 2,
+      "id": "PR_kwDOHuKM_s5KyD2p",
+      "title": "Allow application to specify the metadata transmitted with the stream reset",
+      "url": "https://github.com/marten-seemann/draft-seemann-quic-reliable-stream-reset/pull/2",
+      "state": "OPEN",
+      "author": "vasilvv",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Currently, the draft only allows the data in the beginning of the stream to be made reliable.  This PR instead proposes to let application specify what metadata is being carried with the reset.  This has the drawback of limiting the amount of reset-attached metadata we can transmit to ~1200 bytes, but it also allows us to address issue\r\nietf-wg-webtrans/draft-ietf-webtrans-http3#90, and since the only things we currently need to be reliable are the session ID and the error code, this should not be the problem.",
+      "createdAt": "2023-02-26T23:21:44Z",
+      "updatedAt": "2023-02-27T20:44:29Z",
+      "baseRepository": "marten-seemann/draft-seemann-quic-reliable-stream-reset",
+      "baseRefName": "master",
+      "baseRefOid": "59000d0137fbd12f5c1d37ec947741247fd2d97b",
+      "headRepository": "vasilvv/draft-seemann-quic-reliable-stream-reset",
+      "headRefName": "reset-payload",
+      "headRefOid": "cb256abf4217d6b1f382f3622f0616166330c7d8",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "kazuho",
+          "authorAssociation": "NONE",
+          "body": "IIUC, the approach being proposed in this PR is to extend the amount of information that can be sent with a stream reset (QUIC v1 can only send 16-bit of information).\r\n\r\nIMO the primary benefit of the proposed approach is that the changes to the QUIC stacks are smaller. The downside is, in addition to the limit on the amount of data that can be sent, that it requires more code in the applications.\r\n\r\nThe sending application would be required to have the mechanism of transmitting the same thing in two ways. The receiving application would be required to have the mechanism of receiving the same thing in two ways, and additionally may be required to compare if the information received over the two channels are identical.\r\n\r\nConsidering the trade off (of where the complexity) would be, my preference goes to addressing the problem in the QUIC stacks, because then the complexity on every application protocol can be reduced (that needs these mechanism).\r\n\r\nAs pointed out in https://mailarchive.ietf.org/arch/msg/quic/oqAG6yeKB_KNgwDS5iPMVmCu8Qw/, I think that this kind of mechanism is a nice have not only in WebTransport.",
+          "createdAt": "2023-02-27T03:31:43Z",
+          "updatedAt": "2023-02-27T03:31:43Z"
+        },
+        {
+          "author": "vasilvv",
+          "authorAssociation": "NONE",
+          "body": "> IMO the primary benefit of the proposed approach is that the changes to the QUIC stacks are smaller.\r\n\r\nAnother important advantage is that the application protocol can select what data it sends (e.g. we can add a custom error code for WebTransport applications, which is something we cannot do now).  So it's more flexibility.\r\n\r\n> The downside is, in addition to the limit on the amount of data that can be sent, that it requires more code in the applications.\r\n\r\nIt depends on the application API of the QUIC stack in question.  It is entirely plausible that \"you can read from the stream even if we received a reset\" is an operation that is not trivial to support (e.g. you designed your API with the assumption that all reads fail after you receive reset).",
+          "createdAt": "2023-02-27T16:26:02Z",
+          "updatedAt": "2023-02-27T16:26:02Z"
+        },
+        {
+          "author": "marten-seemann",
+          "authorAssociation": "OWNER",
+          "body": "Thank you for the PR, @vasilvv! I can see how this simplifies the changes to the QUIC state machine, and I assume that this is the main motivation behind this (class of) proposals.\r\n\r\nA nice property of the original proposal is that it effortlessly covers the recursive use case: An application running on top of WebTransport might also need to set some kind of stream identifier which needs to be transmitted reliable, and an application running on top of that one...\r\nNow this isn't impossible to achieve with this change, but it requires a lot of special casing in all protocol definitions (\"WebTransport parses the Session ID from the RESET_STREAM_WITH_PAYLOAD, and passes the remainder of the payload up to the application\"). Ultimately, all this special logic is duplicated, since your stack already handles parsing of these identifiers in the happy path (the non-reset path).",
+          "createdAt": "2023-02-27T20:44:28Z",
+          "updatedAt": "2023-02-27T20:44:28Z"
+        }
+      ],
+      "reviews": []
     }
   ]
 }
