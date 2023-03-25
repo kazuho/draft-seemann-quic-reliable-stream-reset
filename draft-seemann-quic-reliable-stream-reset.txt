@@ -4,8 +4,8 @@
 
 QUIC                                                          M. Seemann
 Internet-Draft                                             Protocol Labs
-Intended status: Informational                           7 November 2022
-Expires: 11 May 2023
+Intended status: Standards Track                           25 March 2023
+Expires: 26 September 2023
 
 
                       Reliable QUIC Stream Resets
@@ -48,11 +48,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 May 2023.
+   This Internet-Draft will expire on 26 September 2023.
 
 Copyright Notice
 
-   Copyright (c) 2022 IETF Trust and the persons identified as the
+   Copyright (c) 2023 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -240,9 +240,9 @@ Table of Contents
    [WEBTRANSPORT]
               Frindell, A., Kinnear, E., and V. Vasiliev, "WebTransport
               over HTTP/3", Work in Progress, Internet-Draft, draft-
-              ietf-webtrans-http3-03, 6 July 2022,
+              ietf-webtrans-http3-05, 13 March 2023,
               <https://datatracker.ietf.org/doc/html/draft-ietf-
-              webtrans-http3-03>.
+              webtrans-http3-05>.
 
 Acknowledgments
 
